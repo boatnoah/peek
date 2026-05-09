@@ -2,6 +2,16 @@
 
 Configuration for AI coding agent skills used in this repo.
 
+## Checks
+
+Run the full local test suite before opening a PR:
+
+```bash
+./scripts/test
+```
+
+This wraps `xcodebuild test` for the `peek` scheme on macOS and writes DerivedData to `/private/tmp/peek-derived-data-local` by default.
+
 ## Agent skills
 
 ### Issue tracker
