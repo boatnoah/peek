@@ -26,14 +26,8 @@ nonisolated final class RedirectResolver {
     private let maxRedirects: Int
     private let redirectDelegate: RedirectSuppressingDelegate?
 
-    init(maxRedirects: Int = 10) {
-        let configuration = URLSessionConfiguration.ephemeral
-        configuration.requestCachePolicy = .reloadIgnoringLocalAndRemoteCacheData
-
-        let redirectDelegate = RedirectSuppressingDelegate()
-        self.session = URLSession(configuration: configuration, delegate: redirectDelegate, delegateQueue: nil)
-        self.maxRedirects = maxRedirects
-        self.redirectDelegate = redirectDelegate
+    convenience init(maxRedirects: Int = 10) {
+        self.init(configuration: .ephemeral, maxRedirects: maxRedirects)
     }
 
     init(configuration: URLSessionConfiguration, maxRedirects: Int = 10) {
