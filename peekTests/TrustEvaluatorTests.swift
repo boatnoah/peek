@@ -38,7 +38,21 @@ struct TrustEvaluatorTests {
         #expect(TrustEvaluator.evaluate(originalURL: original, resolvedURL: resolved, isFlagged: false) == .shortener(resolvedDomain: "apple.com"))
     }
 
-    // MARK: - .mismatch
+    // MARK: - .mismatch (including malformed URLs)
+
+    @Test func malformedURLWithNoHostReturnsMismatch() {
+        let original = URL(string: "not-a-url")!
+        let resolved = URL(string: "also-not-a-url")!
+        #expect(TrustEvaluator.evaluate(originalURL: original, resolvedURL: resolved, isFlagged: false) == .mismatch)
+    }
+
+    @Test func malformedResolvedURLReturnsMismatch() {
+        let original = URL(string: "https://example.com")!
+        let resolved = URL(string: "not-a-url")!
+        #expect(TrustEvaluator.evaluate(originalURL: original, resolvedURL: resolved, isFlagged: false) == .mismatch)
+    }
+
+
 
     @Test func differentDomainsReturnMismatch() {
         let original = URL(string: "https://google.com/page")!

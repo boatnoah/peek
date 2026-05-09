@@ -20,6 +20,10 @@ enum TrustEvaluator {
         let originalDomain = domain(from: originalURL)
         let resolvedDomain = domain(from: resolvedURL)
 
+        guard !originalDomain.isEmpty, !resolvedDomain.isEmpty else {
+            return .mismatch
+        }
+
         if knownShorteners.contains(originalDomain) {
             return .shortener(resolvedDomain: resolvedDomain)
         }
