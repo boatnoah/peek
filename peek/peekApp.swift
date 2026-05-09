@@ -4,7 +4,15 @@ import AppKit
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.accessory)
+
+        guard !Self.isRunningUnitTests() else { return }
         requestAccessibilityPermission()
+    }
+
+    nonisolated static func isRunningUnitTests(
+        environment: [String: String] = ProcessInfo.processInfo.environment
+    ) -> Bool {
+        environment["XCTestConfigurationFilePath"] != nil
     }
 
     private func requestAccessibilityPermission() {
