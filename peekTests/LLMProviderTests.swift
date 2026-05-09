@@ -64,6 +64,29 @@ struct LLMProviderTests {
         }
     }
 
+    // MARK: - Request construction
+
+    @Test func requestIsConstructedCorrectly() async throws {
+        MockGeminiProtocol.setResponse(.ok(text: "cleaned"))
+        let apiKey = "test-api-key-12345"
+        let provider = GeminiProvider(apiKey: apiKey, session: makeMockSession())
+        _ = try await provider.cleanDescription("Some description.")
+
+        let req = try #require(MockGeminiProtocol.lastRequest)
+
+        // HTTP method must be POST
+        #expect(req.httpMethod == "POST")
+
+        // URL must point at the correct model endpoint with no query string
+        let url = try #require(req.url)
+        #expect(url.absoluteString.contains("gemini-2.0-flash:generateContent"))
+        #expect(url.query == nil, "API key must not appear in the URL query string")
+
+        // Required headers must be present and correct
+        #expect(req.value(forHTTPHeaderField: "Content-Type") == "application/json")
+        #expect(req.value(forHTTPHeaderField: "x-goog-api-key") == apiKey)
+    }
+
     // MARK: - Helpers
 
     private func makeMockSession() -> URLSession {
@@ -86,15 +109,19 @@ private final class MockGeminiProtocol: URLProtocol {
     private static var error: Error?
     private(set) static var requestCount = 0
 
+    private(set) static var lastRequest: URLRequest?
+
     static func setResponse(_ r: MockGeminiResponse) {
         response = r
         error = nil
         requestCount = 0
+        lastRequest = nil
     }
 
     static func setError(_ err: Error) {
         error = err
         requestCount = 0
+        lastRequest = nil
     }
 
     override class func canInit(with request: URLRequest) -> Bool { true }
@@ -102,6 +129,7 @@ private final class MockGeminiProtocol: URLProtocol {
 
     override func startLoading() {
         Self.requestCount += 1
+        Self.lastRequest = request
 
         if let error = Self.error {
             client?.urlProtocol(self, didFailWithError: error)
