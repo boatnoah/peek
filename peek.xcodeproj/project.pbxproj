@@ -6,8 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXContainerItemProxy section */
+		493B84F62FAEC1C800842EF9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 493B84C02FAEB66100842EF9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 493B84C72FAEB66100842EF9;
+			remoteInfo = peek;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		493B84C82FAEB66100842EF9 /* peek.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = peek.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		493B84F22FAEC1C800842EF9 /* peekTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = peekTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -16,10 +27,22 @@
 			path = peek;
 			sourceTree = "<group>";
 		};
+		493B84F32FAEC1C800842EF9 /* peekTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = peekTests;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		493B84C52FAEB66100842EF9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		493B84EF2FAEC1C800842EF9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -33,6 +56,7 @@
 			isa = PBXGroup;
 			children = (
 				493B84CA2FAEB66100842EF9 /* peek */,
+				493B84F32FAEC1C800842EF9 /* peekTests */,
 				493B84C92FAEB66100842EF9 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -41,6 +65,7 @@
 			isa = PBXGroup;
 			children = (
 				493B84C82FAEB66100842EF9 /* peek.app */,
+				493B84F22FAEC1C800842EF9 /* peekTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -70,6 +95,29 @@
 			productReference = 493B84C82FAEB66100842EF9 /* peek.app */;
 			productType = "com.apple.product-type.application";
 		};
+		493B84F12FAEC1C800842EF9 /* peekTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 493B84FA2FAEC1C800842EF9 /* Build configuration list for PBXNativeTarget "peekTests" */;
+			buildPhases = (
+				493B84EE2FAEC1C800842EF9 /* Sources */,
+				493B84EF2FAEC1C800842EF9 /* Frameworks */,
+				493B84F02FAEC1C800842EF9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				493B84F72FAEC1C800842EF9 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				493B84F32FAEC1C800842EF9 /* peekTests */,
+			);
+			name = peekTests;
+			packageProductDependencies = (
+			);
+			productName = peekTests;
+			productReference = 493B84F22FAEC1C800842EF9 /* peekTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -82,6 +130,10 @@
 				TargetAttributes = {
 					493B84C72FAEB66100842EF9 = {
 						CreatedOnToolsVersion = 26.2;
+					};
+					493B84F12FAEC1C800842EF9 = {
+						CreatedOnToolsVersion = 26.2;
+						TestTargetID = 493B84C72FAEB66100842EF9;
 					};
 				};
 			};
@@ -100,12 +152,20 @@
 			projectRoot = "";
 			targets = (
 				493B84C72FAEB66100842EF9 /* peek */,
+				493B84F12FAEC1C800842EF9 /* peekTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		493B84C62FAEB66100842EF9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		493B84F02FAEC1C800842EF9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -122,7 +182,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		493B84EE2FAEC1C800842EF9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		493B84F72FAEC1C800842EF9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 493B84C72FAEB66100842EF9 /* peek */;
+			targetProxy = 493B84F62FAEC1C800842EF9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		493B84D12FAEB66200842EF9 /* Debug */ = {
@@ -178,7 +253,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -235,7 +310,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MACOSX_DEPLOYMENT_TARGET = 26.2;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -303,6 +378,44 @@
 			};
 			name = Release;
 		};
+		493B84F82FAEC1C800842EF9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.boatnoah.peekTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/peek.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/peek";
+			};
+			name = Debug;
+		};
+		493B84F92FAEC1C800842EF9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.boatnoah.peekTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/peek.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/peek";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -320,6 +433,15 @@
 			buildConfigurations = (
 				493B84D42FAEB66200842EF9 /* Debug */,
 				493B84D52FAEB66200842EF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		493B84FA2FAEC1C800842EF9 /* Build configuration list for PBXNativeTarget "peekTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				493B84F82FAEC1C800842EF9 /* Debug */,
+				493B84F92FAEC1C800842EF9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
