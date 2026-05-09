@@ -25,6 +25,8 @@ actor PreviewCache {
         store[url] = result
     }
 
+    // O(n) on `order` (max 200 entries) — acceptable at this cap; swap to
+    // a doubly-linked list + dictionary if maxEntries grows significantly.
     private func promote(_ url: String) {
         if let index = order.firstIndex(of: url) {
             order.remove(at: index)

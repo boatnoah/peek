@@ -26,6 +26,27 @@ struct PreviewCacheTests {
         #expect(await cache.get("https://example.com") == second)
     }
 
+    // Overwriting a key must not duplicate it in the LRU order. If it did,
+    // the next eviction would incorrectly remove the overwritten entry instead
+    // of the true LRU. Fill to capacity, overwrite the oldest entry (url0),
+    // then overflow — url0 should survive and url1 should be evicted.
+    @Test func overwriteDoesNotDuplicateOrderEntry() async {
+        let cache = PreviewCache()
+        let limit = PreviewCache.maxEntries
+
+        for i in 0..<limit {
+            await cache.set("https://url\(i).com", result: .stub(domain: "url\(i).com"))
+        }
+
+        let updated = EnrichmentResult.stub(domain: "updated.com")
+        await cache.set("https://url0.com", result: updated) // promote url0 to MRU
+
+        await cache.set("https://overflow.com", result: .stub(domain: "overflow.com"))
+
+        #expect(await cache.get("https://url0.com") == updated) // survived — was promoted
+        #expect(await cache.get("https://url1.com") == nil)     // evicted as new LRU
+    }
+
     // MARK: - LRU eviction
 
     @Test func evictsLRUEntryAtCapacity() async {
