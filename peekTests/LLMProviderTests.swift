@@ -2,6 +2,7 @@ import Testing
 import Foundation
 @testable import peek
 
+// MockGeminiProtocol uses static state; serialized prevents data races across tests
 @Suite(.serialized)
 struct LLMProviderTests {
 

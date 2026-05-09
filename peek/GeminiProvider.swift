@@ -3,11 +3,9 @@ import Foundation
 enum GeminiProviderError: Error, Equatable {
     case httpError(Int)
     case unexpectedResponse
-    case invalidRequest
 }
 
 final class GeminiProvider: LLMProvider {
-    // gemini-2.0-flash is the current Gemini Flash model for REST API calls.
     private static let endpoint = URL(
         string: "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent"
     )!
@@ -23,26 +21,26 @@ final class GeminiProvider: LLMProvider {
     func cleanDescription(_ raw: String) async throws -> String {
         guard !raw.isEmpty else { return raw }
 
-        var components = URLComponents(url: Self.endpoint, resolvingAgainstBaseURL: false)!
-        components.queryItems = [URLQueryItem(name: "key", value: apiKey)]
-        guard let url = components.url else { throw GeminiProviderError.invalidRequest }
+        // Truncate to guard against prompt-injection via a hostile og:description.
+        let safeRaw = String(raw.prefix(500))
 
         let prompt = """
             Rewrite the following website description as a single plain-English sentence. \
-            Return only the sentence, no extra text.\n\n\(raw)
+            Return only the sentence, no extra text.\n\n\(safeRaw)
             """
 
         let body: [String: Any] = [
             "contents": [["parts": [["text": prompt]]]]
         ]
 
-        guard let bodyData = try? JSONSerialization.data(withJSONObject: body) else {
-            throw GeminiProviderError.invalidRequest
-        }
+        // Body is a statically-known [String: Any] structure that is always serializable.
+        let bodyData = try! JSONSerialization.data(withJSONObject: body)
 
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: Self.endpoint)
         request.httpMethod = "POST"
+        request.timeoutInterval = 15  // generous ceiling for a single-turn LLM call over a good connection
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.setValue(apiKey, forHTTPHeaderField: "x-goog-api-key")
         request.httpBody = bodyData
 
         let (data, response) = try await session.data(for: request)
