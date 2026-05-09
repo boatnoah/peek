@@ -2,6 +2,20 @@
 
 Configuration for AI coding agent skills used in this repo.
 
+## PR titles
+
+Use Conventional Commits format: `type(scope): short description` — all lowercase, imperative mood, 72 characters max.
+
+```
+feat(llm): add GeminiProvider
+fix(cache): correct TTL expiry on eviction
+chore(ci): pin Xcode version
+```
+
+Types: `feat` · `fix` · `chore` · `docs` · `refactor` · `test`
+
+Scope is the subsystem name (e.g. `llm`, `cache`, `redirect`, `threat`). Omit scope only for repo-wide changes.
+
 ## Checks
 
 Run the full local test suite before opening a PR:
