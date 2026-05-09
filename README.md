@@ -26,6 +26,21 @@ xcodebuild -project peek.xcodeproj -scheme peek -configuration Debug build CODE_
 
 Or open `peek.xcodeproj` in Xcode and press `⌘R`.
 
+## Testing locally
+
+Run the same test command agents use before opening a PR:
+
+```bash
+./scripts/test
+```
+
+The script wraps `xcodebuild test -project peek.xcodeproj -scheme peek -destination 'platform=macOS'` and writes DerivedData to `/private/tmp/peek-derived-data-local`. You can pass extra `xcodebuild` arguments through the script, or override defaults with environment variables:
+
+```bash
+DERIVED_DATA_PATH=/private/tmp/peek-derived-data-pr ./scripts/test
+DESTINATION='platform=macOS,arch=arm64' ./scripts/test
+```
+
 ## Project structure
 
 ```
