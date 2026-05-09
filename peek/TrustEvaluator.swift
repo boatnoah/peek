@@ -1,19 +1,13 @@
 import Foundation
 
-enum TrustBadge: Equatable {
+nonisolated enum TrustBadge: Equatable, Sendable {
     case verified
     case mismatch
     case shortener(resolvedDomain: String)
     case knownRisk
 }
 
-private let knownShorteners: Set<String> = [
-    "bit.ly", "t.co", "tinyurl.com", "ow.ly", "short.link",
-    "goo.gl", "buff.ly", "ift.tt", "dlvr.it", "tiny.cc",
-    "rb.gy", "cutt.ly", "shorturl.at"
-]
-
-enum TrustEvaluator {
+nonisolated enum TrustEvaluator {
     static func evaluate(originalURL: URL, resolvedURL: URL, isFlagged: Bool) -> TrustBadge {
         if isFlagged { return .knownRisk }
 
@@ -24,7 +18,7 @@ enum TrustEvaluator {
             return .mismatch
         }
 
-        if knownShorteners.contains(originalDomain) {
+        if ShortenerDomains.contains(host: originalDomain) {
             return .shortener(resolvedDomain: resolvedDomain)
         }
 
