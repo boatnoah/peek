@@ -24,3 +24,13 @@ jobs:
             -destination 'platform=macOS' \
             build \
             CODE_SIGNING_ALLOWED=NO
+
+      - name: Test
+        run: |
+          xcodebuild \
+            -project Peek.xcodeproj \
+            -scheme Peek \
+            -configuration Debug \
+            -destination 'platform=macOS' \
+            test \
+            CODE_SIGNING_ALLOWED=NO
