@@ -28,7 +28,7 @@ struct peekApp: App {
     @State private var linkCount = 0
 
     var body: some Scene {
-        MenuBarExtra("Peek", systemImage: "eye") {
+        MenuBarExtra("Peek", image: "MenuBarIcon") {
             Toggle("Enable Peek", isOn: $isEnabled)
 
             Divider()

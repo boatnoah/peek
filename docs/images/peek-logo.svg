@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="160" viewBox="0 0 560 160" role="img" aria-label="Peek logo">
+  <defs>
+    <style>
+      .word { font: 700 92px -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Helvetica, Arial, sans-serif; letter-spacing: -1.8px; fill: #111827; }
+      @media (prefers-color-scheme: dark) { .word { fill: #f9fafb; } }
+    </style>
+  </defs>
+  <g transform="translate(12 20)">
+    <ellipse cx="60" cy="60" rx="56" ry="34" fill="none" stroke="#111827" stroke-width="12" />
+    <circle cx="60" cy="60" r="17" fill="#111827" />
+    <circle cx="68" cy="52" r="5" fill="white" />
+  </g>
+  <text class="word" x="145" y="108">peek</text>
+</svg>
