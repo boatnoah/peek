@@ -1,3 +1,6 @@
+<!-- PR title format: type(scope): short description — e.g. feat(llm): add GeminiProvider (max 72 chars) -->
+<!-- Types: feat | fix | chore | docs | refactor | test -->
+
 ## Summary
 
 <!-- What does this PR do? Keep it to 1-2 sentences. -->
