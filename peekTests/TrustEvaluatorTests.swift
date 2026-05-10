@@ -48,9 +48,9 @@ struct TrustEvaluatorTests {
         #expect(TrustEvaluator.evaluate(originalURL: original, resolvedURL: resolved, isFlagged: false, isShortener: false) == .mismatch)
     }
 
-    @Test func subdomainDifferenceReturnsMismatch() {
-        let original = URL(string: "https://google.com")!
-        let resolved = URL(string: "https://www.google.com")!
+    @Test func similarSuffixDomainsReturnMismatch() {
+        let original = URL(string: "https://example.com")!
+        let resolved = URL(string: "https://fakeexample.com")!
         #expect(TrustEvaluator.evaluate(originalURL: original, resolvedURL: resolved, isFlagged: false, isShortener: false) == .mismatch)
     }
 
@@ -71,6 +71,18 @@ struct TrustEvaluatorTests {
     @Test func caseInsensitiveDomainMatchReturnsVerified() {
         let original = URL(string: "https://GitHub.com/page")!
         let resolved = URL(string: "https://github.com/page")!
+        #expect(TrustEvaluator.evaluate(originalURL: original, resolvedURL: resolved, isFlagged: false, isShortener: false) == .verified)
+    }
+
+    @Test func nakedToWWWRedirectReturnsVerified() {
+        let original = URL(string: "https://google.com")!
+        let resolved = URL(string: "https://www.google.com")!
+        #expect(TrustEvaluator.evaluate(originalURL: original, resolvedURL: resolved, isFlagged: false, isShortener: false) == .verified)
+    }
+
+    @Test func subdomainToParentDomainRedirectReturnsVerified() {
+        let original = URL(string: "https://shop.brand.com")!
+        let resolved = URL(string: "https://brand.com")!
         #expect(TrustEvaluator.evaluate(originalURL: original, resolvedURL: resolved, isFlagged: false, isShortener: false) == .verified)
     }
 }

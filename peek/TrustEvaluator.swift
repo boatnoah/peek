@@ -22,7 +22,7 @@ nonisolated enum TrustEvaluator {
             return .shortener(resolvedDomain: resolvedDomain)
         }
 
-        if originalDomain != resolvedDomain {
+        if !domainsMatch(originalDomain, resolvedDomain) {
             return .mismatch
         }
 
@@ -35,5 +35,16 @@ nonisolated enum TrustEvaluator {
 
     private static func domain(from url: URL) -> String {
         url.host?.lowercased() ?? ""
+    }
+
+    private static func domainsMatch(_ originalDomain: String, _ resolvedDomain: String) -> Bool {
+        originalDomain == resolvedDomain ||
+            isSubdomain(originalDomain, of: resolvedDomain) ||
+            isSubdomain(resolvedDomain, of: originalDomain)
+    }
+
+    private static func isSubdomain(_ candidateDomain: String, of parentDomain: String) -> Bool {
+        guard parentDomain.contains(".") else { return false }
+        return candidateDomain.hasSuffix(".\(parentDomain)")
     }
 }
