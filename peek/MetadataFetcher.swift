@@ -1,6 +1,6 @@
 import Foundation
 
-final class MetadataFetcher {
+struct MetadataFetcher {
     static let bodyCap = 65_536  // 64 KB hard cap
     private let session: URLSession
 
