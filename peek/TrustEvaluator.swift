@@ -8,7 +8,7 @@ nonisolated enum TrustBadge: Equatable, Sendable {
 }
 
 nonisolated enum TrustEvaluator {
-    static func evaluate(originalURL: URL, resolvedURL: URL, isFlagged: Bool) -> TrustBadge {
+    static func evaluate(originalURL: URL, resolvedURL: URL, isFlagged: Bool, isShortener: Bool) -> TrustBadge {
         if isFlagged { return .knownRisk }
 
         let originalDomain = domain(from: originalURL)
@@ -18,7 +18,7 @@ nonisolated enum TrustEvaluator {
             return .mismatch
         }
 
-        if ShortenerDomains.contains(host: originalDomain) {
+        if isShortener {
             return .shortener(resolvedDomain: resolvedDomain)
         }
 
