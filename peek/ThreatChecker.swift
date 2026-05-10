@@ -5,6 +5,6 @@ enum ThreatResult: Equatable, Sendable {
     case flagged
 }
 
-protocol ThreatChecker {
+protocol ThreatChecker: Sendable {
     func check(domain: String) async -> ThreatResult
 }
