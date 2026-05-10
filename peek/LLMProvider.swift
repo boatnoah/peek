@@ -1,5 +1,5 @@
 import Foundation
 
-protocol LLMProvider {
+protocol LLMProvider: Sendable {
     func cleanDescription(_ raw: String) async throws -> String
 }
