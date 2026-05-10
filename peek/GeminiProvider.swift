@@ -33,8 +33,7 @@ final class GeminiProvider: LLMProvider {
             "contents": [["parts": [["text": prompt]]]]
         ]
 
-        // Body is a statically-known [String: Any] structure that is always serializable.
-        let bodyData = try! JSONSerialization.data(withJSONObject: body)
+        let bodyData = try JSONSerialization.data(withJSONObject: body)
 
         var request = URLRequest(url: Self.endpoint)
         request.httpMethod = "POST"
