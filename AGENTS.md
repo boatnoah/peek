@@ -16,6 +16,17 @@ Types: `feat` · `fix` · `chore` · `docs` · `refactor` · `test`
 
 Scope is the subsystem name (e.g. `llm`, `cache`, `redirect`, `threat`). Omit scope only for repo-wide changes.
 
+## PR body
+
+Every PR must include a `Closes #<issue>` line at the bottom of the body. If the work spans multiple issues, list each one:
+
+```
+Closes #9
+Closes #12
+```
+
+This ensures the linked issue is closed automatically when the PR is merged.
+
 ## Checks
 
 Run the full local test suite before opening a PR:
