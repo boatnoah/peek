@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/images/peek-logo.svg" alt="Peek logo" width="360" />
+</p>
+
 # Peek
 
 Smarter link previews. Everywhere on your Mac.
