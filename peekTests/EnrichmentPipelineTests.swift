@@ -13,16 +13,16 @@ struct EnrichmentPipelineTests {
         cache: PreviewCache,
         threatChecker: any ThreatChecker = MockThreatChecker(),
         llm: any LLMProvider = MockLLMProvider(),
-        html: String = ""
+        metadataFetcher: any MetadataFetching = StubMetadataFetcher()
     ) -> EnrichmentPipeline {
-        MockPipelineURLProtocol.reset(html: html)
+        MockPipelineURLProtocol.reset()
         let config = URLSessionConfiguration.ephemeral
         config.protocolClasses = [MockPipelineURLProtocol.self]
         return EnrichmentPipeline(
             cache: cache,
             resolver: RedirectResolver(configuration: config),
             threatChecker: threatChecker,
-            metadataFetcher: MetadataFetcher(session: URLSession(configuration: config)),
+            metadataFetcher: metadataFetcher,
             llm: llm
         )
     }
@@ -58,13 +58,19 @@ struct EnrichmentPipelineTests {
         let threat = MockThreatChecker()
         let llm = MockLLMProvider()
         llm.stubbedResult = "A cleaned description."
-        let html = """
-        <head>
-          <meta property="og:title" content="Page Title">
-          <meta property="og:description" content="Raw description.">
-        </head>
-        """
-        let pipeline = makePipeline(cache: cache, threatChecker: threat, llm: llm, html: html)
+        let metadataFetcher = StubMetadataFetcher(
+            stubbedMetadata: PageMetadata(
+                title: "Page Title",
+                description: "Raw description.",
+                faviconURL: nil
+            )
+        )
+        let pipeline = makePipeline(
+            cache: cache,
+            threatChecker: threat,
+            llm: llm,
+            metadataFetcher: metadataFetcher
+        )
         let result = await pipeline.enrich(url)
 
         #expect(result.resolvedDomain == "example.com")
@@ -74,6 +80,7 @@ struct EnrichmentPipelineTests {
         #expect(threat.callCount == 1)
         #expect(llm.callCount == 1)
         #expect(llm.lastInput == "Raw description.")
+        #expect(await metadataFetcher.fetchCallCount == 1)
 
         let cached = await cache.get(url.absoluteString)
         #expect(cached == result)
@@ -93,8 +100,13 @@ struct EnrichmentPipelineTests {
 
     @Test func missingDescriptionLeavesDescriptionNilAndSkipsLLM() async {
         let llm = MockLLMProvider()
-        let html = "<head><meta property=\"og:title\" content=\"Title Only\"></head>"
-        let pipeline = makePipeline(cache: PreviewCache(), llm: llm, html: html)
+        let pipeline = makePipeline(
+            cache: PreviewCache(),
+            llm: llm,
+            metadataFetcher: StubMetadataFetcher(
+                stubbedMetadata: PageMetadata(title: "Title Only", description: nil, faviconURL: nil)
+            )
+        )
         let result = await pipeline.enrich(url)
 
         #expect(result.description == nil)
@@ -107,23 +119,37 @@ struct EnrichmentPipelineTests {
     @Test func secondCallReturnsCachedResultWithoutHittingNetwork() async {
         let cache = PreviewCache()
         let threat = MockThreatChecker()
-        let pipeline = makePipeline(cache: cache, threatChecker: threat)
+        let metadataFetcher = StubMetadataFetcher()
+        let pipeline = makePipeline(cache: cache, threatChecker: threat, metadataFetcher: metadataFetcher)
 
         _ = await pipeline.enrich(url)
         _ = await pipeline.enrich(url)
 
         #expect(threat.callCount == 1)
+        #expect(await metadataFetcher.fetchCallCount == 1)
     }
 }
 
 // MARK: - Mock URL protocol
 
+private actor StubMetadataFetcher: MetadataFetching {
+    let stubbedMetadata: PageMetadata
+    private(set) var fetchCallCount = 0
+
+    init(stubbedMetadata: PageMetadata = PageMetadata(title: nil, description: nil, faviconURL: nil)) {
+        self.stubbedMetadata = stubbedMetadata
+    }
+
+    func fetch(_ url: URL) async -> PageMetadata {
+        fetchCallCount += 1
+        return stubbedMetadata
+    }
+}
+
 private final class MockPipelineURLProtocol: URLProtocol {
-    private static var html: String = ""
     private(set) static var requestCount = 0
 
-    static func reset(html: String = "") {
-        Self.html = html
+    static func reset() {
         requestCount = 0
     }
 
@@ -132,7 +158,7 @@ private final class MockPipelineURLProtocol: URLProtocol {
 
     override func startLoading() {
         Self.requestCount += 1
-        let data = Data(Self.html.utf8)
+        let data = Data()
         let response = HTTPURLResponse(
             url: request.url!,
             statusCode: 200,
