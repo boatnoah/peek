@@ -37,6 +37,18 @@ Run the full local test suite before opening a PR:
 
 This wraps `xcodebuild test` for the `peek` scheme on macOS and writes DerivedData to `/private/tmp/peek-derived-data-local` by default.
 
+Secret scanning runs as part of `./scripts/test`. For a standalone scan, run:
+
+```bash
+./scripts/scan-secrets
+```
+
+The repo also includes a staged pre-commit scanner at `.githooks/pre-commit`. Enable it in a clone with:
+
+```bash
+git config core.hooksPath .githooks
+```
+
 ## Agent skills
 
 ### Issue tracker
@@ -50,3 +62,7 @@ Default label vocabulary — `needs-triage`, `needs-info`, `ready-for-agent`, `r
 ### Domain docs
 
 Single-context repo — one `CONTEXT.md` and `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
+### Secret hygiene
+
+Before editing API keys, tokens, credentials, environment variables, Xcode schemes, CI, tests with credential fixtures, or secret history cleanup, use `.agents/skills/secret-hygiene/SKILL.md`.

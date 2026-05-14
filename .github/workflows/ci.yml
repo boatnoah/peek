@@ -15,6 +15,9 @@ jobs:
       - name: Select Xcode
         run: sudo xcode-select -s /Applications/Xcode.app
 
+      - name: Secret scan
+        run: ./scripts/scan-secrets
+
       - name: Build
         run: |
           xcodebuild \

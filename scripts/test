@@ -10,6 +10,8 @@ DERIVED_DATA_PATH="${DERIVED_DATA_PATH:-/private/tmp/peek-derived-data-local}"
 
 cd "$ROOT_DIR"
 
+./scripts/scan-secrets
+
 xcodebuild test \
   -project "$PROJECT" \
   -scheme "$SCHEME" \
