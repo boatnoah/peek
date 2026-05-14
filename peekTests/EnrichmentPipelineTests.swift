@@ -140,12 +140,14 @@ private actor StubMetadataFetcher: MetadataFetching {
         self.stubbedMetadata = stubbedMetadata
     }
 
-    func fetch(_ url: URL) async -> PageMetadata {
+    // Returns the same metadata regardless of URL; extend with a url→metadata map if URL-conditional behavior is needed.
+    func fetch(_: URL) async -> PageMetadata {
         fetchCallCount += 1
         return stubbedMetadata
     }
 }
 
+// Used only by RedirectResolver — metadata is now injected via StubMetadataFetcher.
 private final class MockPipelineURLProtocol: URLProtocol {
     private(set) static var requestCount = 0
 
