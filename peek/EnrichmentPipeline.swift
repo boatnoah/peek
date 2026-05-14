@@ -4,14 +4,14 @@ struct EnrichmentPipeline {
     private let cache: PreviewCache
     private let resolver: RedirectResolver
     private let threatChecker: any ThreatChecker
-    private let metadataFetcher: MetadataFetcher
+    private let metadataFetcher: any MetadataFetching
     private let llm: any LLMProvider
 
     init(
         cache: PreviewCache,
         resolver: RedirectResolver,
         threatChecker: any ThreatChecker,
-        metadataFetcher: MetadataFetcher = MetadataFetcher(),
+        metadataFetcher: any MetadataFetching = MetadataFetcher(),
         llm: any LLMProvider
     ) {
         self.cache = cache

@@ -1,6 +1,10 @@
 import Foundation
 
-struct MetadataFetcher {
+protocol MetadataFetching: Sendable {
+    func fetch(_ url: URL) async -> PageMetadata
+}
+
+struct MetadataFetcher: MetadataFetching {
     static let bodyCap = 65_536  // 64 KB hard cap
     private let session: URLSession
 
