@@ -4,9 +4,9 @@ import SwiftUI
 @MainActor class PreviewCardController {
     private var panel: NSPanel?
 
-    static let xOffset: CGFloat = 12
-    static let yOffset: CGFloat = 16
-    static let cardSize = CGSize(width: 320, height: 200)
+    nonisolated static let xOffset: CGFloat = 12
+    nonisolated static let yOffset: CGFloat = 16
+    nonisolated static let cardSize = CGSize(width: 320, height: 200)
 
     func show(result: EnrichmentResult, near point: NSPoint) {
         let p = panel ?? makePanel()
@@ -43,7 +43,7 @@ import SwiftUI
         return p
     }
 
-    static func cardOrigin(for cursorPoint: NSPoint, cardSize: CGSize, screenFrame: CGRect) -> NSPoint {
+    nonisolated static func cardOrigin(for cursorPoint: NSPoint, cardSize: CGSize, screenFrame: CGRect) -> NSPoint {
         var x = cursorPoint.x + xOffset
         var y = cursorPoint.y + yOffset
 
