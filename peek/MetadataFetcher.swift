@@ -23,7 +23,7 @@ struct MetadataFetcher: MetadataFetching {
     static func parse(html: String, baseURL: URL) -> PageMetadata {
         PageMetadata(
             title: metaContent("og:title", in: html) ?? titleTag(in: html),
-            description: metaContent("og:description", in: html),
+            description: metaContent("og:description", in: html) ?? metaNameContent("description", in: html),
             faviconURL: faviconHref(in: html, baseURL: baseURL)
                 ?? URL(string: "/favicon.ico", relativeTo: baseURL)?.absoluteURL
         )
@@ -47,6 +47,16 @@ struct MetadataFetcher: MetadataFetching {
     }
 
     // MARK: - Parsing helpers
+
+    // Matches <meta name="N" content="V"> and <meta content="V" name="N">
+    private static func metaNameContent(_ name: String, in html: String) -> String? {
+        let escapedName = NSRegularExpression.escapedPattern(for: name)
+        let patterns = [
+            "(?i)<meta[^>]+name=[\"']\(escapedName)[\"'][^>]+content=[\"']([^\"'<>]+)[\"']",
+            "(?i)<meta[^>]+content=[\"']([^\"'<>]+)[\"'][^>]+name=[\"']\(escapedName)[\"']"
+        ]
+        return firstCapture(patterns: patterns, in: html)
+    }
 
     // Matches <meta property="P" content="V"> and <meta content="V" property="P">
     private static func metaContent(_ property: String, in html: String) -> String? {

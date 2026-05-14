@@ -15,12 +15,12 @@ struct PreviewCardViewTests {
 
     // MARK: - Default positioning
 
-    @Test func cardIsPlaced12RightAnd16AboveCursor() {
+    @Test func cardIsPlaced12RightAnd16BelowCursor() {
         let cursor = NSPoint(x: 400, y: 400)
         let result = origin(for: cursor)
 
         #expect(result.x == cursor.x + PreviewCardController.xOffset)
-        #expect(result.y == cursor.y + PreviewCardController.yOffset)
+        #expect(result.y == cursor.y - cardSize.height - PreviewCardController.yOffset)
     }
 
     // MARK: - Horizontal overflow
@@ -34,11 +34,11 @@ struct PreviewCardViewTests {
 
     // MARK: - Vertical overflow
 
-    @Test func cardFlipsDownWhenItWouldOverflowTopEdge() {
-        let cursor = NSPoint(x: 400, y: 880)
+    @Test func cardFlipsUpWhenItWouldOverflowBottomEdge() {
+        let cursor = NSPoint(x: 400, y: 20)
         let result = origin(for: cursor)
 
-        #expect(result.y < cursor.y)
+        #expect(result.y > cursor.y)
     }
 
     // MARK: - Both edges overflow
@@ -58,6 +58,6 @@ struct PreviewCardViewTests {
         let result = origin(for: cursor)
 
         #expect(result.x == cursor.x + PreviewCardController.xOffset)
-        #expect(result.y == cursor.y + PreviewCardController.yOffset)
+        #expect(result.y == cursor.y - cardSize.height - PreviewCardController.yOffset)
     }
 }

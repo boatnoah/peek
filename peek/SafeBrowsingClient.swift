@@ -1,7 +1,7 @@
 import Foundation
 
 actor SafeBrowsingClient: ThreatChecker {
-    private static let lookupURL = URL(string: "https://safebrowsing.googleapis.com/v4/threatMatches:find")!
+    private nonisolated static let lookupURL = URL(string: "https://safebrowsing.googleapis.com/v4/threatMatches:find")!
 
     private let apiKey: String?
     private let session: URLSession

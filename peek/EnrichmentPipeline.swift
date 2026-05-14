@@ -28,6 +28,8 @@ struct EnrichmentPipeline {
             return cached
         }
 
+        guard !Task.isCancelled else { return abandoned(url.host?.lowercased() ?? "") }
+
         let resolved: ResolvedURL
         do {
             resolved = try await resolver.resolve(url)
@@ -41,13 +43,17 @@ struct EnrichmentPipeline {
             )
         }
 
+        guard !Task.isCancelled else { return abandoned(resolved.cleanedDomain) }
+
         async let threat = threatChecker.check(domain: resolved.cleanedDomain)
         async let metadata = metadataFetcher.fetch(resolved.finalURL)
         let (threatResult, meta) = await (threat, metadata)
 
+        guard !Task.isCancelled else { return abandoned(resolved.cleanedDomain) }
+
         let cleanedDescription: String?
         if let raw = meta.description, !raw.isEmpty {
-            cleanedDescription = try? await llm.cleanDescription(raw)
+            cleanedDescription = (try? await llm.cleanDescription(raw)) ?? raw
         } else {
             cleanedDescription = nil
         }
@@ -69,5 +75,10 @@ struct EnrichmentPipeline {
 
         await cache.set(key, result: result)
         return result
+    }
+
+    // Returns a lightweight placeholder for a cancelled task — never cached.
+    private func abandoned(_ domain: String) -> EnrichmentResult {
+        EnrichmentResult(resolvedDomain: domain, trustBadge: .mismatch, title: nil, description: nil, faviconURL: nil)
     }
 }

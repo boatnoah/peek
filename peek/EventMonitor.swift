@@ -1,77 +1,64 @@
-import CoreGraphics
+import AppKit
 import Foundation
 
 final class EventMonitor: @unchecked Sendable {
     private let dwellInterval: TimeInterval
     private let onDwell: @Sendable (CGPoint) -> Void
+    private let onMove: (@Sendable (CGPoint) -> Void)?
     private let queue: DispatchQueue
 
-    private var tapPort: CFMachPort?
-    private var runLoopSource: CFRunLoopSource?
+    private var globalMonitor: Any?
     private var timer: DispatchSourceTimer?
     private var pendingPoint: CGPoint = .zero
 
     init(
         dwellInterval: TimeInterval = 0.3,
         queue: DispatchQueue = DispatchQueue(label: "com.boatnoah.peek.eventmonitor", qos: .userInteractive),
+        onMove: (@Sendable (CGPoint) -> Void)? = nil,
         onDwell: @escaping @Sendable (CGPoint) -> Void
     ) {
         self.dwellInterval = dwellInterval
         self.queue = queue
+        self.onMove = onMove
         self.onDwell = onDwell
     }
 
     func start() {
-        let selfPtr = Unmanaged.passRetained(self)
+        guard globalMonitor == nil else { return }
 
-        guard let tap = CGEvent.tapCreate(
-            tap: .cgSessionEventTap,
-            place: .headInsertEventTap,
-            options: .listenOnly,
-            eventsOfInterest: CGEventMask(1 << CGEventType.mouseMoved.rawValue),
-            callback: { _, _, event, refcon -> Unmanaged<CGEvent>? in
-                guard let refcon else { return Unmanaged.passRetained(event) }
-                let monitor = Unmanaged<EventMonitor>.fromOpaque(refcon).takeUnretainedValue()
-                let point = event.location
-                monitor.queue.async {
-                    monitor.handleMouseMoved(to: point)
-                }
-                return Unmanaged.passRetained(event)
-            },
-            userInfo: selfPtr.toOpaque()
-        ) else {
-            selfPtr.release()
-            return
+        globalMonitor = NSEvent.addGlobalMonitorForEvents(matching: .mouseMoved) { [weak self] _ in
+            guard let self else { return }
+            // NSEvent.mouseLocation is in AppKit screen coords (y=0 at bottom-left).
+            // AXUIElementCopyElementAtPosition expects Quartz coords (y=0 at top-left).
+            let appKitPoint = NSEvent.mouseLocation
+            let screenHeight = NSScreen.screens.first?.frame.height ?? 0
+            let quartzPoint = CGPoint(x: appKitPoint.x, y: screenHeight - appKitPoint.y)
+            self.queue.async {
+                self.handleMouseMoved(to: quartzPoint)
+            }
         }
 
-        tapPort = tap
-        let source = CFMachPortCreateRunLoopSource(kCFAllocatorDefault, tap, 0)
-        runLoopSource = source
-        CFRunLoopAddSource(CFRunLoopGetMain(), source, .commonModes)
-        CGEvent.tapEnable(tap: tap, enable: true)
+        if globalMonitor == nil {
+            peekLog("[Peek] EventMonitor: NSEvent global monitor FAILED — Accessibility permission likely missing")
+        } else {
+            peekLog("[Peek] EventMonitor: global monitor started, listening for mouse events")
+        }
     }
 
     func stop() {
+        if let monitor = globalMonitor {
+            NSEvent.removeMonitor(monitor)
+            globalMonitor = nil
+        }
         queue.async { [weak self] in
             self?.cancelTimer()
         }
-
-        if let tap = tapPort {
-            CGEvent.tapEnable(tap: tap, enable: false)
-        }
-        if let source = runLoopSource {
-            CFRunLoopRemoveSource(CFRunLoopGetMain(), source, .commonModes)
-        }
-        if let tap = tapPort {
-            CFMachPortInvalidate(tap)
-        }
-        tapPort = nil
-        runLoopSource = nil
     }
 
     // MARK: - Private
 
     private func handleMouseMoved(to point: CGPoint) {
+        onMove?(point)
         pendingPoint = point
         cancelTimer()
 
@@ -79,6 +66,7 @@ final class EventMonitor: @unchecked Sendable {
         newTimer.schedule(deadline: .now() + dwellInterval)
         newTimer.setEventHandler { [weak self] in
             guard let self else { return }
+            peekLog("[Peek] EventMonitor: dwell fired at \(self.pendingPoint)")
             self.onDwell(self.pendingPoint)
         }
         newTimer.resume()

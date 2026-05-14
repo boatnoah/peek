@@ -27,3 +27,9 @@ Sparkle/
 build/
 *.o
 *.d
+
+# Code coverage / profiling
+*.profraw
+
+# Claude Code local state
+.claude/

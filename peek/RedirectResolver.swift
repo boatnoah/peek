@@ -53,7 +53,7 @@ nonisolated final class RedirectResolver {
     private func followRedirects(from url: URL) async throws -> URL {
         var currentURL = url
 
-        for _ in 0...maxRedirects {
+        for _ in 0..<maxRedirects {
             var request = URLRequest(url: currentURL)
             request.httpMethod = "HEAD"
             request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData

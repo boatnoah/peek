@@ -43,8 +43,8 @@ struct PreviewCardView: View {
         .frame(maxWidth: 320)
         .background(
             RoundedRectangle(cornerRadius: 10)
-                .fill(.regularMaterial)
-                .shadow(color: .black.opacity(0.15), radius: 8, x: 0, y: 2)
+                .fill(Color(nsColor: .windowBackgroundColor))
+                .shadow(color: .black.opacity(0.25), radius: 8, x: 0, y: 2)
         )
     }
 
